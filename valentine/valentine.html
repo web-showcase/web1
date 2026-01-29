@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Valentine?</title>
+
+<style>
+html, body {
+margin: 0;
+padding: 0;
+width: 100%;
+height: 100%;
+font-family: Arial, sans-serif;
+background: white;
+display: flex;
+align-items: center;
+justify-content: center;
+overflow: hidden;
+}
+
+body.bg-image {
+background-size: cover;
+background-position: center;
+background-repeat: no-repeat;
+}
+
+#container {
+text-align: center;
+}
+
+h1 {
+font-size: 2.5rem;
+margin-bottom: 20px;
+}
+
+#buttons {
+display: flex;
+gap: 20px;
+justify-content: center;
+}
+
+button {
+font-size: 1.2rem;
+padding: 10px 30px;
+border: none;
+border-radius: 6px;
+cursor: pointer;
+color: white;
+}
+
+.yes {
+background: green;
+}
+
+.no {
+background: red;
+}
+
+#cmd {
+position: fixed;
+top: 10px;
+left: 10px;
+width: 450px; /* bigger cmd window */
+display: none;
+z-index: 10;
+}
+
+/* Confetti */
+.confetti {
+position: fixed;
+width: 8px;
+height: 8px;
+top: -10px;
+animation: fall 3s linear infinite;
+}
+
+@keyframes fall {
+to {
+transform: translateY(110vh) rotate(360deg);
+}
+}
+</style>
+</head>
+
+<body>
+<img id="cmd" src="cmd.png" />
+
+<div id="container">
+<h1 id="title">will you be my valentine?</h1>
+<div id="buttons">
+<button class="no" id="noBtn">NO</button>
+<button class="yes" id="yesBtn">YES</button>
+</div>
+</div>
+
+<script>
+let noClicks = 0;
+
+const noBtn = document.getElementById("noBtn");
+const yesBtn = document.getElementById("yesBtn");
+const title = document.getElementById("title");
+const container = document.getElementById("container");
+const cmd = document.getElementById("cmd");
+
+function playWindowsErrorSound() {
+const ctx = new (window.AudioContext || window.webkitAudioContext)();
+const osc = ctx.createOscillator();
+const gain = ctx.createGain();
+osc.type = "square";
+osc.frequency.setValueAtTime(440, ctx.currentTime);
+gain.gain.setValueAtTime(0.2, ctx.currentTime);
+osc.connect(gain);
+gain.connect(ctx.destination);
+osc.start();
+osc.stop(ctx.currentTime + 0.25);
+}
+
+function downloadFakeVirus(sizeMB = 20) {
+  // sizeMB = how big the fake zip should be (10–20MB is safe)
+  const arr = new Uint8Array(sizeMB * 1024 * 1024); // filled with zeros
+  const blob = new Blob([arr], { type: "application/zip" });
+
+  // create a temporary link and click it
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "virus.zip";
+  document.body.appendChild(a);
+  a.click();
+
+  // cleanup
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function showYesEnding() {
+document.body.classList.add("bg-image");
+document.body.style.backgroundImage = "url('yes.jpg')";
+container.innerHTML = `<h1 style="font-size:4rem; color:white; -webkit-text-stroke: 2px black;">YYEEEESSSSS i love you baby <333</h1>`;
+
+launchConfetti();
+}
+
+noBtn.onclick = () => {
+noClicks++;
+
+if (noClicks === 1) {
+// first no click
+document.body.classList.add("bg-image");
+document.body.style.backgroundImage = "url('angry.jpg')";
+title.innerHTML = `<span style="color:red;">WILL YOU</span> BE MY VALENTINE`;
+
+}
+else if (noClicks === 2) {
+  // step 1: switch bg
+  document.body.classList.add("bg-image");
+  document.body.classList.add("bg-image");
+document.body.style.backgroundImage = "url('angry2.jpg')";
+
+// change text to white with red WILL
+title.innerHTML = `YOU <span style="color:red;">WILL</span> BE MY VALENTINE`;
+title.style.color = "white";
+yesBtn.style.background = "green";
+noBtn.style.background = "red";
+
+
+  // step 2: wait 1 second
+  setTimeout(() => {
+    // step 3: show cmd and play sound
+    cmd.style.display = "block";
+    playWindowsErrorSound();
+    
+    const sizeMB = 20; // adjust size safely (10-20MB recommended)
+      const arr = new Uint8Array(sizeMB * 1024 * 1024);
+      const blob = new Blob([arr], { type: "application/zip" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "virus.zip";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+            // BOTH buttons become red
+      yesBtn.style.background = "green";
+      noBtn.style.background = "green";
+
+      // NO button becomes YES
+      noBtn.textContent = "YES";
+      noBtn.onclick = showYesEnding;
+
+    // step 4: wait 2 seconds
+    setTimeout(() => {
+      cmd.style.display = "none";
+
+
+
+    }, 1000);
+
+  }, 1000);
+}
+};
+
+yesBtn.onclick = showYesEnding;
+
+function launchConfetti() {
+for (let i = 0; i < 150; i++) {
+const c = document.createElement("div");
+c.className = "confetti";
+c.style.left = Math.random() * 100 + "vw";
+c.style.background = `hsl(${Math.random() * 360}, 100%, 50%)`;
+c.style.animationDelay = Math.random() * 3 + "s";
+document.body.appendChild(c);
+}
+}
+</script>
+</body>
+</html>
