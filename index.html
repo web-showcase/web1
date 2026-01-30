@@ -136,9 +136,58 @@ function downloadFakeVirus(sizeMB = 20) {
 function showYesEnding() {
 document.body.classList.add("bg-image");
 document.body.style.backgroundImage = "url('yes.jpg')";
-container.innerHTML = `<h1 style="font-size:4rem; color:white; -webkit-text-stroke: 2px black;">YYEEEESSSSS i love you baby <333</h1>`;
+container.innerHTML = `<h1 style="font-size:4rem; color:white; -webkit-text-stroke: 2px black;">YYEEEESSSSS i love you baby <333</h1>
+    <button id="flowerBtn" style="
+      position: fixed;       /* keep it on top */
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 8px 16px;
+      font-size: 1rem;
+      border-radius: 5px;
+      border: none;
+      cursor: pointer;
+      background-color: lightpink;
+      color: black;
+      z-index: 9999;         /* highest layer so it's above flowers */
+    ">receive flowers</button>
+  `;
 
 launchConfetti();
+  const flowerBtn = document.getElementById("flowerBtn");
+  flowerBtn.onclick = () => {
+    // Add click animation
+    flowerBtn.style.color = "white";
+
+  
+
+    // Revert after 200ms
+    setTimeout(() => {
+      flowerBtn.style.color = "black";
+
+
+    }, 200);
+    const flowers = [
+      "flowers/1.png", "flowers/2.png", "flowers/3.png", "flowers/4.png", "flowers/5.png",
+      "flowers/6.png", "flowers/7.png", "flowers/8.png", "flowers/9.png", "flowers/10.png",
+      "flowers/11.png", "flowers/12.png", "flowers/13.png", "flowers/14.png" 
+    ];
+
+    // Randomly pick a flower
+    const randomFlower = flowers[Math.floor(Math.random() * flowers.length)];
+
+    // Create image element
+    const img = document.createElement("img");
+    img.src = randomFlower;
+    img.style.position = "fixed";
+    img.style.width = "500px"; // size of flower
+    img.style.height = "500px";
+    img.style.left = Math.random() * (window.innerWidth - 60) + "px";
+    img.style.top = Math.random() * (window.innerHeight - 60) + "px";
+    img.style.pointerEvents = "none"; // so it doesn't block button clicks
+    img.style.zIndex = 5;
+
+    document.body.appendChild(img);
+    };
 }
 
 noBtn.onclick = () => {
