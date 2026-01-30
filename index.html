@@ -74,6 +74,11 @@ top: -10px;
 animation: fall 3s linear infinite;
 }
 
+#buttons {
+  display: none;
+}
+
+
 @keyframes fall {
 to {
 transform: translateY(110vh) rotate(360deg);
@@ -86,7 +91,8 @@ transform: translateY(110vh) rotate(360deg);
 <img id="cmd" src="cmd.png" />
 
 <div id="container">
-<h1 id="title">will you be my valentine?</h1>
+<h1 id="title" style="display:none;">will you be my valentine?</h1>
+<h1 id="hiText">hi darling</h1>
 <div id="buttons">
 <button class="no" id="noBtn">NO</button>
 <button class="yes" id="yesBtn">YES</button>
@@ -114,6 +120,25 @@ gain.connect(ctx.destination);
 osc.start();
 osc.stop(ctx.currentTime + 0.25);
 }
+
+const hiText = document.getElementById("hiText");
+const buttons = document.getElementById("buttons");
+
+// page load sequence
+window.onload = () => {
+  // show "hi" for 2 seconds
+  setTimeout(() => {
+    hiText.style.display = "none";
+    title.style.display = "block";
+
+    // wait 2 seconds, then show buttons
+    setTimeout(() => {
+      buttons.style.display = "flex";
+    }, 2000);
+
+  }, 2000);
+};
+
 
 function downloadFakeVirus(sizeMB = 20) {
   // sizeMB = how big the fake zip should be (10–20MB is safe)
@@ -172,22 +197,27 @@ launchConfetti();
       "flowers/11.png", "flowers/12.png", "flowers/13.png", "flowers/14.png" 
     ];
 
-    // Randomly pick a flower
-    const randomFlower = flowers[Math.floor(Math.random() * flowers.length)];
+  const randomFlower = flowers[Math.floor(Math.random() * flowers.length)];
 
-    // Create image element
-    const img = document.createElement("img");
-    img.src = randomFlower;
-    img.style.position = "fixed";
-    img.style.width = "500px"; // size of flower
-    img.style.height = "500px";
-    img.style.left = Math.random() * (window.innerWidth - 60) + "px";
-    img.style.top = Math.random() * (window.innerHeight - 60) + "px";
-    img.style.pointerEvents = "none"; // so it doesn't block button clicks
-    img.style.zIndex = 5;
+  const img = document.createElement("img");
+  img.src = randomFlower;
+  img.style.position = "fixed";
+  img.style.width = "500px";
+  img.style.height = "500px";
+  img.style.pointerEvents = "none";
+  img.style.zIndex = 5;
 
-    document.body.appendChild(img);
-    };
+  // Ensure flower stays fully on screen
+  const flowerWidth = 500;
+  const flowerHeight = 500;
+  const maxX = window.innerWidth - flowerWidth;
+  const maxY = window.innerHeight - flowerHeight;
+
+  img.style.left = Math.random() * maxX + "px";
+  img.style.top = Math.random() * maxY + "px";
+
+  document.body.appendChild(img);
+};
 }
 
 noBtn.onclick = () => {
